@@ -1,0 +1,6 @@
+make ARCH=arm CROSS_COMPILE=<toolchain prefix> <defconfig name>
+make ARCH=arm CROSS_COMPILE=<toolchain prefix> dtbs
+
+Example:
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- saturn_defconfig
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- dtbs
