@@ -161,6 +161,12 @@ reg_3p3v: regulator@1 {
 						MX6QDL_PAD_SD3_DAT1__SD3_DATA1		0x17059
 						MX6QDL_PAD_SD3_DAT2__SD3_DATA2		0x17059
 						MX6QDL_PAD_SD3_DAT3__SD3_DATA3		0x17059
+						MX6QDL_PAD_SD3_DAT4__SD3_DATA4		0x17059
+						MX6QDL_PAD_SD3_DAT5__SD3_DATA5		0x17059
+						MX6QDL_PAD_SD3_DAT6__SD3_DATA6		0x17059
+						MX6QDL_PAD_SD3_DAT7__SD3_DATA7		0x17059
+						MX6QDL_PAD_GPIO_18__SD3_VSELECT		0x17059
+						MX6QDL_PAD_SD3_RST__SD3_RESET		0x17059
 						>;
 				};
 	};
@@ -199,16 +205,19 @@ reg_3p3v: regulator@1 {
 	status = "okay";
 };
 
-&usdhc1 {
+&usdhc1 {		// external microsd
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc1>;
-	cd-gpios = <&gpio1 2 0>;
+	keep-power-in-suspend;
+	non-removable;
 	status = "okay";
 };
 
-&usdhc3 {
+&usdhc3 {		// internal eMMC
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc3>;
-	cd-gpios = <&gpio3 9 0>;
+	bus-width = <8>;
+	keep-power-in-suspend;
+	non-removable;
 	status = "okay";
 };
