@@ -1,5 +1,6 @@
 /dts-v1/;
 #include "imx6q.dtsi"
+#include "imx6q-padctrl.h"
 
 / {
 	model = "NTLab Saturn";
