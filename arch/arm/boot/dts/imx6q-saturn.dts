@@ -78,31 +78,33 @@
 				>;
 			};
 	
-			pinctrl_usbotg: usbotggrp {
-				fsl,pins = <
-					MX6QDL_PAD_GPIO_1__USB_OTG_ID		0x17059
-				>;
-			};
-	
 			pinctrl_usdhc1: usdhc1grp {
 				fsl,pins = <
-					MX6QDL_PAD_SD1_CMD__SD1_CMD		0x17059
-					MX6QDL_PAD_SD1_CLK__SD1_CLK		0x10059
+					MX6QDL_PAD_SD1_CMD__SD1_CMD			0x17059
+					MX6QDL_PAD_SD1_CLK__SD1_CLK			0x10059
 					MX6QDL_PAD_SD1_DAT0__SD1_DATA0		0x17059
 					MX6QDL_PAD_SD1_DAT1__SD1_DATA1		0x17059
 					MX6QDL_PAD_SD1_DAT2__SD1_DATA2		0x17059
 					MX6QDL_PAD_SD1_DAT3__SD1_DATA3		0x17059
+					MX6QDL_PAD_GPIO_1__SD1_CD_B			0x17059
+					MX6QDL_PAD_GPIO_9__SD1_WP			0x17059
 				>;
 			};
 	
 			pinctrl_usdhc3: usdhc3grp {
 				fsl,pins = <
-					MX6QDL_PAD_SD3_CMD__SD3_CMD		0x17059
-					MX6QDL_PAD_SD3_CLK__SD3_CLK		0x10059
+					MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17059
+					MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10059
 					MX6QDL_PAD_SD3_DAT0__SD3_DATA0		0x17059
 					MX6QDL_PAD_SD3_DAT1__SD3_DATA1		0x17059
 					MX6QDL_PAD_SD3_DAT2__SD3_DATA2		0x17059
 					MX6QDL_PAD_SD3_DAT3__SD3_DATA3		0x17059
+					MX6QDL_PAD_SD3_DAT4__SD3_DATA4		0x17059
+					MX6QDL_PAD_SD3_DAT5__SD3_DATA5		0x17059
+					MX6QDL_PAD_SD3_DAT6__SD3_DATA6		0x17059
+					MX6QDL_PAD_SD3_DAT7__SD3_DATA7		0x17059
+					MX6QDL_PAD_SD3_RST__SD3_RESET		0x17059
+					MX6QDL_PAD_GPIO_18__SD3_VSELECT		0x17059
 				>;
 			};
 		};
@@ -143,15 +145,23 @@
 	
 	&usdhc1 {
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_usdhc1>;
-		cd-gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
+		pinctrl-0     = <&pinctrl_usdhc1>;
+		non-removable;
+		fsl,wp-controller;
+		keep-power-in-suspend;
+		bus-width     = <4>;
+		max-frequency = <50000000>;
 		status = "okay";
 	};
 	
 	&usdhc3 {
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_usdhc3>;
-		cd-gpios = <&gpio3 9 GPIO_ACTIVE_LOW>;
+		non-removable;
+		fsl,wp-controller;
+		keep-power-in-suspend;
+		bus-width     = <8>;
+		max-frequency = <50000000>;
 		status = "okay";
 	};
 
