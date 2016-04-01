@@ -74,7 +74,8 @@
 				fsl,pins = <
 					MX6QDL_PAD_CSI0_DAT14__UART5_TX_DATA	0x1b0b1
 					MX6QDL_PAD_CSI0_DAT15__UART5_RX_DATA	0x1b0b1
-					MX6QDL_PAD_EIM_D19__UART1_CTS_B			0x1b0b1
+					//MX6QDL_PAD_EIM_D19__UART1_CTS_B			0x1b0b1
+					MX6QDL_PAD_CSI0_DAT19__GPIO6_IO05		0x1b0b1
 				>;
 			};
 	
@@ -107,6 +108,21 @@
 					MX6QDL_PAD_GPIO_18__SD3_VSELECT		0x17059
 				>;
 			};
+			
+			pinctrl_stim300: stim300grp {
+				fsl,pins = <
+					MX6QDL_PAD_EIM_BCLK__GPIO6_IO31		//TOV - input
+					MX6QDL_PAD_GPIO_19__GPIO4_IO05 		//ExtTrig - output. 1
+					MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30   //Reset - output.   1
+				>;
+			}
+			
+			pinctrl_gps: gpsgrp {
+				fsl,pins = <
+					MX6QDL_PAD_DISP0_DAT12__GPIO5_IO06  //PPS_1 input
+					MX6QDL_PAD_DISP0_DAT13__GPIO5_IO07  //PPS_2 input
+				>;
+			}
 		};
 	};
 	
