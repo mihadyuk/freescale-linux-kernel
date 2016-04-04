@@ -43,6 +43,7 @@
 #include <asm/irq.h>
 #include <linux/platform_data/serial-imx.h>
 #include <linux/platform_data/dma-imx.h>
+#include <linux/gpio/consumer.h>
 
 /* Register definitions */
 #define URXD0 0x0  /* Receiver Register */
@@ -241,6 +242,7 @@ struct imx_port {
 	unsigned int            saved_reg[10];
 #define DMA_TX_IS_WORKING 1
 	unsigned long		flags;
+	struct gpio_desc *gpio_rs485_txen;
 };
 
 struct imx_port_ucrs {
@@ -406,6 +408,15 @@ static void imx_stop_tx(struct uart_port *port)
 		temp = readl(port->membase + UCR4);
 		temp &= ~UCR4_TCEN;
 		writel(temp, port->membase + UCR4);
+	}
+
+	if (sport->gpio_rs485_txen) {
+		/* wait for finish tx operations.*/
+		while (!(readl(port->membase + USR2) & USR2_TXDC)) {
+			udelay(5);
+			barrier();
+		}
+		gpiod_set_value(sport->gpio_rs485_txen, 0);
 	}
 }
 
@@ -595,6 +606,9 @@ static void imx_start_tx(struct uart_port *port)
 	struct imx_port *sport = (struct imx_port *)port;
 	unsigned long temp;
 
+	if (sport->gpio_rs485_txen) {
+		gpiod_set_value(sport->gpio_rs485_txen, 1);
+	}
 	if (port->rs485.flags & SER_RS485_ENABLED) {
 		/* enable transmitter and shifter empty irq */
 		temp = readl(port->membase + UCR2);
@@ -1921,6 +1935,7 @@ static int serial_imx_probe_dt(struct imx_port *sport,
 	const struct of_device_id *of_id =
 			of_match_device(imx_uart_dt_ids, &pdev->dev);
 	int ret;
+	struct gpio_desc *rs485_txen;
 
 	if (!np)
 		/* no device tree device */
@@ -1938,6 +1953,14 @@ static int serial_imx_probe_dt(struct imx_port *sport,
 
 	if (of_get_property(np, "fsl,dte-mode", NULL))
 		sport->dte_mode = 1;
+
+	rs485_txen = gpiod_get(sport->port.dev, "rs485_txen", GPIOD_OUT_LOW);
+	if (IS_ERR(rs485_txen)) {
+		sport->gpio_rs485_txen = 0;
+	}
+	else {
+		sport->gpio_rs485_txen = rs485_txen;
+	}
 
 	sport->devdata = of_id->data;
 
@@ -2065,6 +2088,13 @@ static int serial_imx_remove(struct platform_device *pdev)
 {
 	struct imx_port *sport = platform_get_drvdata(pdev);
 
+	if (sport->gpio_rs485_txen) {
+		/*
+		 * it seems there is no function to free gpio pin.
+		 * */
+		/*gpiod_free(sport->gpio_rs485_txen);*/
+		sport->gpio_rs485_txen = 0;
+	}
 	return uart_remove_one_port(&imx_reg, &sport->port);
 }
 
