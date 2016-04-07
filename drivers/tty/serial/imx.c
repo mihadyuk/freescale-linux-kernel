@@ -1954,7 +1954,7 @@ static int serial_imx_probe_dt(struct imx_port *sport,
 	if (of_get_property(np, "fsl,dte-mode", NULL))
 		sport->dte_mode = 1;
 
-	rs485_txen = gpiod_get(sport->port.dev, "rs485_txen", GPIOD_OUT_LOW);
+	rs485_txen = gpiod_get(&pdev->dev, "rs485_txen", GPIOD_OUT_LOW);
 	if (IS_ERR(rs485_txen)) {
 		sport->gpio_rs485_txen = 0;
 	}
