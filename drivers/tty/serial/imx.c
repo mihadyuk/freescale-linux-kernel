@@ -416,6 +416,7 @@ static void imx_stop_tx(struct uart_port *port)
 			udelay(5);
 			barrier();
 		}
+                //printk(KERN_WARNING "rs485: 0");
 		gpiod_set_value(sport->gpio_rs485_txen, 0);
 	}
 }
@@ -607,6 +608,7 @@ static void imx_start_tx(struct uart_port *port)
 	unsigned long temp;
 
 	if (sport->gpio_rs485_txen) {
+                //printk(KERN_WARNING "rs485: 1");
 		gpiod_set_value(sport->gpio_rs485_txen, 1);
 	}
 	if (port->rs485.flags & SER_RS485_ENABLED) {
@@ -1956,9 +1958,11 @@ static int serial_imx_probe_dt(struct imx_port *sport,
 
 	rs485_txen = gpiod_get(&pdev->dev, "rs485_txen", GPIOD_OUT_LOW);
 	if (IS_ERR(rs485_txen)) {
+                //printk(KERN_WARNING "rs485: unable to open gpio err: %d, dev: %d", (int)rs485_txen, (int)sport->port.dev);
 		sport->gpio_rs485_txen = 0;
 	}
 	else {
+                //printk(KERN_WARNING "rs485: gpio %d initialized.", desc_to_gpio(rs485_txen));
 		sport->gpio_rs485_txen = rs485_txen;
 	}
 
@@ -2093,6 +2097,7 @@ static int serial_imx_remove(struct platform_device *pdev)
 		 * it seems there is no function to free gpio pin.
 		 * */
 		/*gpiod_free(sport->gpio_rs485_txen);*/
+                //printk(KERN_WARNING "rs485: gpio released.");
 		sport->gpio_rs485_txen = 0;
 	}
 	return uart_remove_one_port(&imx_reg, &sport->port);
